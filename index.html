@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shreya — Strategy, Product & Tech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   CSS VARIABLES & RESET
+   ═══════════════════════════════════════════ */
+:root {
+  --cream: #F5F0E8;
+  --cream-dark: #EDE6D8;
+  --charcoal: #1C1C1C;
+  --charcoal-light: #2D2D2D;
+  --gold: #B8956A;
+  --gold-light: #D4B896;
+  --gold-dark: #967650;
+  --sage: #7E9470;
+  --sage-light: #A8BF9C;
+  --rose: #C09090;
+  --rose-light: #D8B5B5;
+  --navy: #2C3547;
+  --paper: #FAF7F2;
+  --text-primary: #1C1C1C;
+  --text-secondary: #5A5A5A;
+  --text-muted: #8A8A8A;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+::selection {
+  background: var(--gold-light);
+  color: var(--charcoal);
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.5s var(--ease-out-expo);
+}
+
+.nav.scrolled {
+  background: rgba(245, 240, 232, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 14px 40px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--charcoal);
+}
+
+.nav-logo span {
+  color: var(--gold);
+}
+
+.nav-links {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  background: rgba(28, 28, 28, 0.05);
+  padding: 5px;
+  border-radius: 100px;
+}
+
+.nav-links a {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border-radius: 100px;
+  transition: all 0.35s var(--ease-out-expo);
+  color: var(--text-secondary);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--charcoal);
+  color: var(--cream);
+}
+
+/* Mobile nav toggle */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  z-index: 1001;
+}
+.nav-toggle span {
+  width: 22px;
+  height: 2px;
+  background: var(--charcoal);
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════
+   HERO SECTION
+   ═══════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 60px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(184, 149, 106, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  left: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(126, 148, 112, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s var(--ease-out-expo) 0.2s forwards;
+}
+
+.hero-name {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 8vw, 7.5rem);
+  font-weight: 500;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--charcoal);
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.9s var(--ease-out-expo) 0.35s forwards;
+}
+
+.hero-name em {
+  font-style: italic;
+  color: var(--gold-dark);
+}
+
+.hero-desc {
+  max-width: 580px;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 48px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s var(--ease-out-expo) 0.55s forwards;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s var(--ease-out-expo) 0.7s forwards;
+}
+
+.hero-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border: 1px solid rgba(28, 28, 28, 0.15);
+  border-radius: 100px;
+  color: var(--text-secondary);
+  transition: all 0.35s var(--ease-out-expo);
+}
+
+.hero-tag:hover {
+  border-color: var(--gold);
+  color: var(--gold-dark);
+  background: rgba(184, 149, 106, 0.06);
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 60px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0;
+  animation: fadeUp 0.8s var(--ease-out-expo) 1s forwards;
+}
+
+.scroll-line {
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-line::after {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--charcoal);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION LAYOUT
+   ═══════════════════════════════════════════ */
+.section {
+  padding: 100px 60px;
+  position: relative;
+}
+
+.section-header {
+  margin-bottom: 64px;
+}
+
+.section-number {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--charcoal);
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--gold-dark);
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-top: 16px;
+}
+
+.divider {
+  width: 60px;
+  height: 1px;
+  background: var(--gold);
+  margin: 24px 0;
+}
+
+/* ═══════════════════════════════════════════
+   ABOUT SECTION
+   ═══════════════════════════════════════════ */
+#about {
+  background: var(--paper);
+}
+
+#about::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.about-text p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.about-text p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  float: left;
+  line-height: 1;
+  margin-right: 10px;
+  margin-top: 6px;
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+.about-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.highlight-card {
+  padding: 28px 32px;
+  background: var(--cream);
+  border-radius: 16px;
+  border: 1px solid rgba(28, 28, 28, 0.05);
+  transition: all 0.4s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+}
+
+.highlight-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--gold);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.highlight-card:hover {
+  transform: translateX(8px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+}
+
+.highlight-card:hover::before {
+  opacity: 1;
+}
+
+.highlight-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.highlight-value {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  line-height: 1.4;
+}
+
+.highlight-detail {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.skill-pill {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  padding: 7px 14px;
+  border-radius: 100px;
+  background: var(--cream);
+  border: 1px solid rgba(28, 28, 28, 0.08);
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.skill-pill:hover {
+  border-color: var(--gold);
+  color: var(--gold-dark);
+}
+
+/* ═══════════════════════════════════════════
+   PROJECTS SECTION
+   ═══════════════════════════════════════════ */
+#projects {
+  background: var(--charcoal);
+  color: var(--cream);
+}
+
+#projects .section-number { color: var(--gold-light); }
+#projects .section-title { color: var(--cream); }
+#projects .section-title em { color: var(--gold-light); }
+#projects .section-subtitle { color: rgba(245,240,232,0.6); }
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.project-card {
+  padding: 40px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  transition: all 0.5s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(184, 149, 106, 0.06) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(184, 149, 106, 0.25);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.project-card:hover::before { opacity: 1; }
+
+.project-card-inner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.project-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.project-category {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  padding: 5px 12px;
+  border: 1px solid rgba(184, 149, 106, 0.25);
+  border-radius: 100px;
+}
+
+.project-number {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.1);
+  line-height: 1;
+}
+
+.project-title {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--cream);
+  line-height: 1.3;
+  margin-bottom: 14px;
+}
+
+.project-desc {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: rgba(245, 240, 232, 0.55);
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  padding: 5px 10px;
+  border-radius: 100px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(245, 240, 232, 0.5);
+}
+
+.project-card.featured {
+  grid-column: span 2;
+  background: rgba(184, 149, 106, 0.06);
+  border-color: rgba(184, 149, 106, 0.12);
+}
+
+.project-card.featured .project-card-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.featured-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.featured-stat {
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.featured-stat-value {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--gold-light);
+  margin-bottom: 4px;
+}
+
+.featured-stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.4);
+}
+
+/* ═══════════════════════════════════════════
+   ARTICLES SECTION
+   ═══════════════════════════════════════════ */
+#articles {
+  background: var(--cream);
+}
+
+#articles::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(28,28,28,0.1), transparent);
+}
+
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.article-card {
+  padding: 36px;
+  background: var(--paper);
+  border: 1px solid rgba(28, 28, 28, 0.06);
+  border-radius: 20px;
+  transition: all 0.45s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.article-card::after {
+  content: '→';
+  position: absolute;
+  top: 36px;
+  right: 36px;
+  font-size: 1.2rem;
+  color: var(--gold);
+  opacity: 0;
+  transform: translate(-10px, 0);
+  transition: all 0.35s var(--ease-out-expo);
+}
+
+.article-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.06);
+  border-color: var(--gold-light);
+}
+
+.article-card:hover::after {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.article-topic {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+.article-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--charcoal);
+  margin-bottom: 14px;
+}
+
+.article-excerpt {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid rgba(28, 28, 28, 0.06);
+}
+
+.article-date {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.article-read {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.articles-cta {
+  text-align: center;
+  margin-top: 56px;
+}
+
+.articles-cta a {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 36px;
+  border: 1.5px solid var(--charcoal);
+  border-radius: 100px;
+  color: var(--charcoal);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.4s var(--ease-out-expo);
+}
+
+.articles-cta a:hover {
+  background: var(--charcoal);
+  color: var(--cream);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(28,28,28,0.15);
+}
+
+/* ═══════════════════════════════════════════
+   CONNECT SECTION
+   ═══════════════════════════════════════════ */
+#connect {
+  background: var(--navy);
+  color: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
+
+#connect::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(184, 149, 106, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+#connect .section-number { color: var(--gold-light); }
+#connect .section-title { color: var(--cream); }
+#connect .section-title em { color: var(--gold-light); }
+
+.connect-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.connect-text p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(245, 240, 232, 0.65);
+  margin-bottom: 36px;
+}
+
+.connect-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.connect-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  transition: all 0.4s var(--ease-out-expo);
+  text-decoration: none;
+  color: var(--cream);
+}
+
+.connect-link:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(184, 149, 106, 0.3);
+  transform: translateX(8px);
+}
+
+.connect-link-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(184, 149, 106, 0.12);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.connect-link-info h4 {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.connect-link-info span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: rgba(245, 240, 232, 0.4);
+  letter-spacing: 0.03em;
+}
+
+.connect-quote {
+  position: relative;
+  padding: 40px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.connect-quote::before {
+  content: '"';
+  font-family: var(--font-display);
+  font-size: 6rem;
+  color: var(--gold);
+  opacity: 0.3;
+  position: absolute;
+  top: 10px;
+  left: 28px;
+  line-height: 1;
+}
+
+.connect-quote blockquote {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: rgba(245, 240, 232, 0.85);
+  margin-bottom: 24px;
+  padding-top: 20px;
+}
+
+.connect-quote cite {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  font-style: normal;
+}
+
+.location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  padding: 10px 20px;
+  background: rgba(184, 149, 106, 0.1);
+  border: 1px solid rgba(184, 149, 106, 0.15);
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+.footer {
+  padding: 32px 60px;
+  background: var(--charcoal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.footer-left {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: rgba(245, 240, 232, 0.35);
+}
+
+.footer-right {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: rgba(245, 240, 232, 0.35);
+}
+
+.footer-right a {
+  color: var(--gold-light);
+  transition: color 0.3s;
+}
+
+.footer-right a:hover {
+  color: var(--gold);
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+.reveal-delay-6 { transition-delay: 0.6s; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .section { padding: 80px 40px; }
+  .hero { padding: 120px 40px 80px; }
+  .about-grid { grid-template-columns: 1fr; gap: 48px; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .project-card.featured { grid-column: span 1; }
+  .project-card.featured .project-card-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .articles-grid { grid-template-columns: 1fr 1fr; }
+  .connect-grid { grid-template-columns: 1fr; gap: 48px; }
+}
+
+@media (max-width: 768px) {
+  .section { padding: 64px 24px; }
+  .hero { padding: 100px 24px 60px; }
+  .scroll-indicator { left: 24px; bottom: 24px; }
+  .nav { padding: 16px 24px; }
+  .nav.scrolled { padding: 12px 24px; }
+
+  .nav-links {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--cream);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0;
+    border-radius: 0;
+    z-index: 999;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a {
+    font-size: 1.2rem;
+    padding: 12px 24px;
+  }
+
+  .nav-toggle { display: flex; }
+
+  .projects-grid { grid-template-columns: 1fr; }
+  .articles-grid { grid-template-columns: 1fr; }
+  .footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+  .featured-stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ NAVIGATION ═══════════ -->
+<nav class="nav" id="nav">
+  <a href="#hero" class="nav-logo">S<span>.</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about" onclick="closeNav()">About</a></li>
+    <li><a href="#projects" onclick="closeNav()">Projects</a></li>
+    <li><a href="#articles" onclick="closeNav()">Articles</a></li>
+    <li><a href="#connect" onclick="closeNav()">Connect</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" onclick="toggleNav()" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="hero">
+  <div class="hero-eyebrow">MBA · Product · Strategy · Tech</div>
+  <h1 class="hero-name">Shreya<br><em>builds things</em><br>that matter.</h1>
+  <p class="hero-desc">
+    MBA graduate blending computer engineering roots with business strategy.
+    I care about healthcare, building smart products, and making data tell a story.
+  </p>
+  <div class="hero-tags">
+    <span class="hero-tag">Product Management</span>
+    <span class="hero-tag">Data & Analytics</span>
+    <span class="hero-tag">Healthcare Tech</span>
+    <span class="hero-tag">Growth Strategy</span>
+    <span class="hero-tag">Quality Assurance</span>
+  </div>
+  <div class="scroll-indicator">
+    <span class="scroll-line"></span>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<section class="section" id="about">
+  <div class="section-header reveal">
+    <span class="section-number">01 — About</span>
+    <h2 class="section-title">The <em>short version</em></h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-text reveal reveal-delay-1">
+      <p>Currently finishing my MBA at RIT's Saunders College of Business with an undergrad in Computer Engineering — so yes, I speak both boardroom and codebase. I've spent time working across the U.S. and India on cross-functional teams, getting comfortable with ambiguity and shipping things that work.</p>
+      <p>My sweet spot is where technology meets strategy. I've led ESG data analytics projects using SQL and Bloomberg datasets, built marketing strategy decks for medical device startups, and run business simulations that taught me more about cash flow than any textbook ever could.</p>
+      <p>I'm deeply passionate about women's health and believe AI hasn't yet scratched the surface of what's possible in that space. That's a problem I'd love to help solve.</p>
+
+      <div class="skills-grid">
+        <span class="skill-pill">SQL & Data Analytics</span>
+        <span class="skill-pill">Python</span>
+        <span class="skill-pill">Product Strategy</span>
+        <span class="skill-pill">Market Research</span>
+        <span class="skill-pill">Agile / Scrum</span>
+        <span class="skill-pill">Quality Assurance</span>
+        <span class="skill-pill">React</span>
+        <span class="skill-pill">Competitive Analysis</span>
+        <span class="skill-pill">Bloomberg Terminal</span>
+        <span class="skill-pill">JIRA</span>
+        <span class="skill-pill">Figma</span>
+        <span class="skill-pill">Cross-functional Leadership</span>
+      </div>
+    </div>
+
+    <div class="about-highlights reveal reveal-delay-2">
+      <div class="highlight-card">
+        <div class="highlight-label">Education</div>
+        <div class="highlight-value">MBA — RIT Saunders College of Business</div>
+        <div class="highlight-detail">B.S. in Computer Engineering</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-label">Focus Areas</div>
+        <div class="highlight-value">Product Management · Healthcare Tech · QA</div>
+        <div class="highlight-detail">Building at the intersection of tech & strategy</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-label">What Drives Me</div>
+        <div class="highlight-value">Women's Health × AI</div>
+        <div class="highlight-detail">Convinced this is the decade it finally gets real attention</div>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-label">Work Style</div>
+        <div class="highlight-value">Cross-functional · Global · Data-informed</div>
+        <div class="highlight-detail">Experience across the U.S. and India</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PROJECTS ═══════════ -->
+<section class="section" id="projects">
+  <div class="section-header reveal">
+    <span class="section-number">02 — Projects</span>
+    <h2 class="section-title">Selected <em>work</em></h2>
+    <p class="section-subtitle">A mix of real projects, case studies, and things I built to learn by doing.</p>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- Featured Project -->
+    <div class="project-card featured reveal reveal-delay-1">
+      <div class="project-card-inner">
+        <div>
+          <div class="project-meta">
+            <span class="project-category">Data Analytics</span>
+            <span class="project-number">01</span>
+          </div>
+          <h3 class="project-title">ESG Investment Analytics</h3>
+          <p class="project-desc">Built a comprehensive data pipeline to analyze the relationship between ESG performance and financial returns for 500+ companies. Merged Bloomberg, MSCI, and CSR data using SQL, handling inconsistent reporting periods, missing values, and different taxonomies across providers.</p>
+          <div class="project-tags">
+            <span class="project-tag">SQL</span>
+            <span class="project-tag">PostgreSQL</span>
+            <span class="project-tag">Bloomberg</span>
+            <span class="project-tag">MSCI</span>
+            <span class="project-tag">Data Cleaning</span>
+            <span class="project-tag">ESG</span>
+          </div>
+        </div>
+        <div class="featured-stats">
+          <div class="featured-stat">
+            <div class="featured-stat-value">500+</div>
+            <div class="featured-stat-label">Companies Analyzed</div>
+          </div>
+          <div class="featured-stat">
+            <div class="featured-stat-value">3</div>
+            <div class="featured-stat-label">Data Sources Merged</div>
+          </div>
+          <div class="featured-stat">
+            <div class="featured-stat-value">23%</div>
+            <div class="featured-stat-label">Lower Risk (ESG 75+)</div>
+          </div>
+          <div class="featured-stat">
+            <div class="featured-stat-value">12K+</div>
+            <div class="featured-stat-label">Rows Processed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-card-inner">
+        <div class="project-meta">
+          <span class="project-category">Marketing Strategy</span>
+          <span class="project-number">02</span>
+        </div>
+        <h3 class="project-title">Ampa Health — TMS Go-To-Market Strategy</h3>
+        <p class="project-desc">Developed a 90-day marketing strategy and 11-slide pitch deck for a medical device startup making portable TMS treatment for depression accessible. Covered competitive landscape, positioning, distribution, and thought leadership plan.</p>
+        <div class="project-tags">
+          <span class="project-tag">Market Analysis</span>
+          <span class="project-tag">Healthcare</span>
+          <span class="project-tag">GTM Strategy</span>
+          <span class="project-tag">Pitch Deck</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="project-card reveal reveal-delay-3">
+      <div class="project-card-inner">
+        <div class="project-meta">
+          <span class="project-category">Product & Project Mgmt</span>
+          <span class="project-number">03</span>
+        </div>
+        <h3 class="project-title">Product & Project Lifecycle — Marvell Semiconductors</h3>
+        <p class="project-desc">Created realistic case studies demonstrating product and project lifecycle management. Built out team compositions, tool ecosystems, and process flows for ASIC development using Aha!, Jira, and Confluence.</p>
+        <div class="project-tags">
+          <span class="project-tag">PLC/PDLC</span>
+          <span class="project-tag">Jira</span>
+          <span class="project-tag">Agile</span>
+          <span class="project-tag">Semiconductors</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 4 -->
+    <div class="project-card reveal reveal-delay-4">
+      <div class="project-card-inner">
+        <div class="project-meta">
+          <span class="project-category">Business Simulation</span>
+          <span class="project-number">04</span>
+        </div>
+        <h3 class="project-title">Capsim Business Simulation — Company "Digby"</h3>
+        <p class="project-desc">Managed a simulated electronics company through multiple competitive rounds. Made real-time decisions across R&D, marketing, production, and finance — learned that financial statements lie if you don't look at operations.</p>
+        <div class="project-tags">
+          <span class="project-tag">Strategy</span>
+          <span class="project-tag">Operations</span>
+          <span class="project-tag">Finance</span>
+          <span class="project-tag">Capsim</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 5 -->
+    <div class="project-card reveal reveal-delay-5">
+      <div class="project-card-inner">
+        <div class="project-meta">
+          <span class="project-category">Web Development</span>
+          <span class="project-number">05</span>
+        </div>
+        <h3 class="project-title">Community Book Library Platform</h3>
+        <p class="project-desc">Designing a React-based platform for readers and writers to share original work. Features genre browsing, analytics dashboards, and annual publisher-matching awards. Built with mock data and artsy Gen Z aesthetics.</p>
+        <div class="project-tags">
+          <span class="project-tag">React</span>
+          <span class="project-tag">UI/UX</span>
+          <span class="project-tag">Full Stack</span>
+          <span class="project-tag">GitHub Pages</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 6 -->
+    <div class="project-card reveal reveal-delay-6">
+      <div class="project-card-inner">
+        <div class="project-meta">
+          <span class="project-category">GenAI & Healthcare</span>
+          <span class="project-number">06</span>
+        </div>
+        <h3 class="project-title">GenAI-Driven Healthcare Products</h3>
+        <p class="project-desc">Explored applications of generative AI in healthcare product development, with focus on cross-functional testing methodologies and data-driven strategy insights for emerging health tech solutions.</p>
+        <div class="project-tags">
+          <span class="project-tag">GenAI</span>
+          <span class="project-tag">HealthTech</span>
+          <span class="project-tag">Testing</span>
+          <span class="project-tag">Strategy</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ ARTICLES ═══════════ -->
+<section class="section" id="articles">
+  <div class="section-header reveal">
+    <span class="section-number">03 — Writing</span>
+    <h2 class="section-title">Medium <em>articles</em></h2>
+    <p class="section-subtitle">Converting MBA coursework into honest breakdowns — what worked, what didn't, and what I'm still figuring out.</p>
+  </div>
+
+  <div class="articles-grid">
+
+    <a href="#" class="article-card reveal reveal-delay-1" target="_blank">
+      <div class="article-topic">Competitive Strategy</div>
+      <h3 class="article-title">When $60 Billion Couldn't Buy Market Share: Microsoft vs. Google in Search</h3>
+      <p class="article-excerpt">Analyzing Microsoft's failed search strategy using the Situation-Complication-Resolution framework. Based on a Harvard Business School case study.</p>
+      <div class="article-footer">
+        <span class="article-date">Dec 2025</span>
+        <span class="article-read">Read on Medium →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card reveal reveal-delay-2" target="_blank">
+      <div class="article-topic">Operations & Finance</div>
+      <h3 class="article-title">What Running a Fake Company Taught Me About Cash Flow</h3>
+      <p class="article-excerpt">Managing simulated company "Digby" through competitive rounds — and discovering that P&L profitability and actual cash health are very different things.</p>
+      <div class="article-footer">
+        <span class="article-date">Dec 2025</span>
+        <span class="article-read">Read on Medium →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card reveal reveal-delay-3" target="_blank">
+      <div class="article-topic">Marketing Analytics</div>
+      <h3 class="article-title">Blue Ocean Strategy: Finding Markets Nobody's Fighting Over</h3>
+      <p class="article-excerpt">Exploring how companies can create uncontested market space instead of competing in overcrowded industries. Notes from MBA coursework.</p>
+      <div class="article-footer">
+        <span class="article-date">Jan 2026</span>
+        <span class="article-read">Read on Medium →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card reveal reveal-delay-4" target="_blank">
+      <div class="article-topic">Negotiation</div>
+      <h3 class="article-title">The Art of Getting to Yes (Without Selling Your Soul)</h3>
+      <p class="article-excerpt">Breaking down negotiation frameworks from MBA coursework — how to create value before claiming it, and why most people negotiate wrong.</p>
+      <div class="article-footer">
+        <span class="article-date">Jan 2026</span>
+        <span class="article-read">Read on Medium →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card reveal reveal-delay-5" target="_blank">
+      <div class="article-topic">Product Strategy</div>
+      <h3 class="article-title">Product Lifecycle vs. Project Lifecycle — They're Not the Same Thing</h3>
+      <p class="article-excerpt">A practical breakdown of PLC vs PDLC using real-world semiconductor scenarios. Why confusing the two leads to bad decisions.</p>
+      <div class="article-footer">
+        <span class="article-date">Feb 2026</span>
+        <span class="article-read">Read on Medium →</span>
+      </div>
+    </a>
+
+    <a href="#" class="article-card reveal reveal-delay-6" target="_blank">
+      <div class="article-topic">Data & ESG</div>
+      <h3 class="article-title">What 500 Companies Taught Me About ESG and Financial Returns</h3>
+      <p class="article-excerpt">The messy reality of merging ESG datasets from Bloomberg, MSCI, and CSR sources — and what the clean data actually revealed.</p>
+      <div class="article-footer">
+        <span class="article-date">Feb 2026</span>
+        <span class="article-read">Read on Medium →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="articles-cta reveal">
+    <a href="https://medium.com/@your-handle" target="_blank">
+      View all on Medium
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════ CONNECT ═══════════ -->
+<section class="section" id="connect">
+  <div class="section-header reveal">
+    <span class="section-number">04 — Connect</span>
+    <h2 class="section-title">Let's <em>talk</em></h2>
+  </div>
+
+  <div class="connect-grid">
+    <div class="connect-text reveal reveal-delay-1">
+      <p>I'm actively exploring opportunities in product management, project management, marketing, and QA — especially at startups and healthcare tech companies. If you're building something that matters, I'd love to hear about it.</p>
+
+      <div class="connect-links">
+        <a href="mailto:your.email@example.com" class="connect-link">
+          <div class="connect-link-icon">✉</div>
+          <div class="connect-link-info">
+            <h4>Email</h4>
+            <span>your.email@example.com</span>
+          </div>
+        </a>
+        <a href="https://linkedin.com/in/your-profile" target="_blank" class="connect-link">
+          <div class="connect-link-icon">in</div>
+          <div class="connect-link-info">
+            <h4>LinkedIn</h4>
+            <span>Let's connect professionally</span>
+          </div>
+        </a>
+        <a href="https://github.com/your-username" target="_blank" class="connect-link">
+          <div class="connect-link-icon">&lt;/&gt;</div>
+          <div class="connect-link-info">
+            <h4>GitHub</h4>
+            <span>See what I'm building</span>
+          </div>
+        </a>
+        <a href="https://medium.com/@your-handle" target="_blank" class="connect-link">
+          <div class="connect-link-icon">M</div>
+          <div class="connect-link-info">
+            <h4>Medium</h4>
+            <span>Read my writing</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="location-badge">
+        <span>📍</span> Rochester, NY · Open to relocation
+      </div>
+    </div>
+
+    <div class="connect-quote reveal reveal-delay-2">
+      <blockquote>The best products happen when someone with technical depth cares enough to ask, "but does this actually help people?"</blockquote>
+      <cite>— My general philosophy</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div class="footer-left">© 2026 Shreya. Built with intention.</div>
+  <div class="footer-right">
+    <a href="#hero">Back to top ↑</a>
+  </div>
+</footer>
+
+<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<script>
+// ── Nav scroll behavior ──
+const nav = document.getElementById('nav');
+let lastScroll = 0;
+
+window.addEventListener('scroll', () => {
+  const currentScroll = window.pageYOffset;
+  nav.classList.toggle('scrolled', currentScroll > 60);
+  lastScroll = currentScroll;
+});
+
+// ── Mobile nav ──
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+function closeNav() {
+  document.getElementById('navLinks').classList.remove('open');
+}
+
+// ── Active nav link ──
+const sections = document.querySelectorAll('.section, .hero');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+const observerNav = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => {
+        link.classList.toggle('active',
+          link.getAttribute('href') === `#${entry.target.id}`
+        );
+      });
+    }
+  });
+}, { rootMargin: '-40% 0px -60% 0px' });
+
+sections.forEach(section => observerNav.observe(section));
+
+// ── Reveal on scroll ──
+const reveals = document.querySelectorAll('.reveal');
+const observerReveal = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observerReveal.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+reveals.forEach(el => observerReveal.observe(el));
+
+// ── Smooth anchor clicks ──
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>
